@@ -5,6 +5,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/** 현재 시각을 epoch milliseconds 로 반환 (요청 소요 시간 측정 등에 사용). */
+export function getEpochMs(): number {
+  return Date.now();
+}
+
 export const getInitials = (str: string): string => {
   if (typeof str !== "string" || !str.trim()) return "?";
 
