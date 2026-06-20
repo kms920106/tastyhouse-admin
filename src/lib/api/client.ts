@@ -4,16 +4,7 @@ import { AUTH_COOKIE_KEYS } from "@/lib/auth-config";
 import logger from "@/lib/logger";
 import { getEpochMs } from "@/lib/utils";
 
-import type { ApiPagination } from "./types";
-
-/**
- * admin-api(Spring) 호출용 fetch 래퍼.
- *
- * - base URL 은 `NEXT_PUBLIC_API_URL` 환경변수에서 읽는다 (예: http://localhost:8081).
- * - 모든 호출은 throw 하지 않고 `ApiResponse<T>` ({ data, error, status }) 를 반환한다.
- * - 백엔드 `{ success, message, data, pagination }` 래퍼를 자동 언래핑한다.
- * - 요청마다 correlationId 를 부여해 pino 로 요청/응답을 로깅한다.
- */
+import type { ApiResponse } from "./types";
 
 type RequestConfig<P extends object = object> = RequestInit & {
   params?: P;
@@ -21,13 +12,6 @@ type RequestConfig<P extends object = object> = RequestInit & {
   timeout?: number;
 };
 
-/**
- * 데이터 계층(throw 기반)에서 사용하는 에러 타입.
- *
- * ApiClient 자체는 throw 하지 않고 `ApiResponse` 를 반환하지만,
- * 서버 액션/페이지에서 try/catch 로 다루기 쉽도록 data 계층에서
- * 에러 응답을 ApiError 로 변환해 던질 수 있다.
- */
 export class ApiError extends Error {
   readonly status: number;
   readonly code?: string;
@@ -40,7 +24,6 @@ export class ApiError extends Error {
   }
 }
 
-/** ApiResponse 가 에러면 ApiError 를 던지고, 성공이면 그대로 반환한다. */
 export function unwrap<T>(response: ApiResponse<T>): ApiResponse<T> {
   if (response.error !== undefined) {
     throw new ApiError(response.error, response.status, response.errorCode);
@@ -48,28 +31,25 @@ export function unwrap<T>(response: ApiResponse<T>): ApiResponse<T> {
   return response;
 }
 
-export interface ApiResponse<T = unknown> {
-  data?: T;
-  error?: string;
-  // 백엔드가 내려주는 비즈니스 에러 코드 (e.g. NOTICE_NOT_FOUND). 성공 응답에서는 항상 없음.
-  errorCode?: string;
-  // 백엔드가 내려주는 사용자 노출용 메시지 (에러/성공 무관, 있을 때만)
-  message?: string;
-  status: number;
-  pagination?: ApiPagination;
-}
-
 class ApiClient {
   private baseURL: string;
   private withAuth: boolean;
 
-  constructor(baseURL: string = process.env.NEXT_PUBLIC_API_URL ?? "", withAuth = true) {
+  constructor(
+    baseURL: string = process.env.NEXT_PUBLIC_API_URL ?? "",
+    withAuth = true,
+  ) {
     this.baseURL = baseURL;
     this.withAuth = withAuth;
   }
 
-  private async getRequestHeaders(headers?: HeadersInit, isFormData?: boolean): Promise<Record<string, string>> {
-    const requestHeaders: Record<string, string> = isFormData ? {} : { "Content-Type": "application/json" };
+  private async getRequestHeaders(
+    headers?: HeadersInit,
+    isFormData?: boolean,
+  ): Promise<Record<string, string>> {
+    const requestHeaders: Record<string, string> = isFormData
+      ? {}
+      : { "Content-Type": "application/json" };
 
     if (this.withAuth) {
       const cookieStore = await cookies();
@@ -87,11 +67,24 @@ class ApiClient {
     return requestHeaders;
   }
 
-  private async request<T, P extends object>(endpoint: string, config: RequestConfig<P> = {}): Promise<ApiResponse<T>> {
-    const { params, headers, isFormData, timeout = 30000, ...restConfig } = config;
+  private async request<T, P extends object>(
+    endpoint: string,
+    config: RequestConfig<P> = {},
+  ): Promise<ApiResponse<T>> {
+    const {
+      params,
+      headers,
+      isFormData,
+      timeout = 30000,
+      ...restConfig
+    } = config;
     const method = restConfig.method ?? "GET";
     const correlationId = crypto.randomUUID().slice(0, 8);
-    const requestLogger = logger.child({ correlationId, method, path: endpoint });
+    const requestLogger = logger.child({
+      correlationId,
+      method,
+      path: endpoint,
+    });
 
     let url = `${this.baseURL}${endpoint}`;
     if (params) {
@@ -156,7 +149,10 @@ class ApiClient {
       // 백엔드 응답 { success, errorCode, data, message, pagination } 구조를 자동 언래핑
       if (json && typeof json === "object" && "success" in json) {
         if (!json.success) {
-          requestLogger.warn({ status, durationMs, message: json.message }, "[API RESPONSE]");
+          requestLogger.warn(
+            { status, durationMs, message: json.message },
+            "[API RESPONSE]",
+          );
           // HTTP 는 2xx 지만 success:false 인 비즈니스 에러 — errorCode/message 보존
           return {
             error: json.message || "오류가 발생했습니다. 다시 시도해 주세요.",
@@ -189,7 +185,10 @@ class ApiClient {
       }
 
       requestLogger.error({ err: error, durationMs }, "[ERROR]");
-      return { error: error instanceof Error ? error.message : "Network error", status: 0 };
+      return {
+        error: error instanceof Error ? error.message : "Network error",
+        status: 0,
+      };
     } finally {
       clearTimeout(timeoutId);
     }
