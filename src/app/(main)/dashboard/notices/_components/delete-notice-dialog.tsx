@@ -14,16 +14,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { deleteNoticeAction } from "@/data/notices/actions";
-import type { NoticeListItem } from "@/data/notices/schema";
+import type { NoticeListItem } from "@/data/notice/notice.dto";
+import { deleteNoticeAction } from "@/feature/notice/actions";
 
 interface DeleteNoticeDialogProps {
-  /** 삭제 대상. null 이면 닫힌 상태. */
   notice: NoticeListItem | null;
   onOpenChange: (open: boolean) => void;
 }
 
-export function DeleteNoticeDialog({ notice, onOpenChange }: DeleteNoticeDialogProps) {
+export function DeleteNoticeDialog({
+  notice,
+  onOpenChange,
+}: DeleteNoticeDialogProps) {
   const [isPending, startTransition] = React.useTransition();
 
   function handleDelete() {
@@ -45,7 +47,9 @@ export function DeleteNoticeDialog({ notice, onOpenChange }: DeleteNoticeDialogP
         <AlertDialogHeader>
           <AlertDialogTitle>공지사항을 삭제하시겠습니까?</AlertDialogTitle>
           <AlertDialogDescription>
-            {notice ? `"${notice.title}" 공지사항이 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.` : ""}
+            {notice
+              ? `"${notice.title}" 공지사항이 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.`
+              : ""}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

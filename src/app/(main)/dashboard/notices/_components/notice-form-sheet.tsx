@@ -7,7 +7,12 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Sheet,
@@ -19,14 +24,17 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import { createNoticeAction, updateNoticeAction } from "@/data/notices/actions";
+import type { NoticeListItem } from "@/data/notice/notice.dto";
+import {
+  createNoticeAction,
+  updateNoticeAction,
+} from "@/feature/notice/actions";
 import {
   NOTICE_CONTENT_MAX,
   NOTICE_TITLE_MAX,
-  type NoticeFormValues,
-  type NoticeListItem,
   noticeFormSchema,
-} from "@/data/notices/schema";
+  type NoticeFormValues,
+} from "@/feature/notice/schema";
 
 interface NoticeFormSheetProps {
   open: boolean;
@@ -35,7 +43,11 @@ interface NoticeFormSheetProps {
   notice?: Pick<NoticeListItem, "id" | "title" | "content"> | null;
 }
 
-export function NoticeFormSheet({ open, onOpenChange, notice }: NoticeFormSheetProps) {
+export function NoticeFormSheet({
+  open,
+  onOpenChange,
+  notice,
+}: NoticeFormSheetProps) {
   const isEdit = Boolean(notice);
   const [isPending, startTransition] = React.useTransition();
 
@@ -47,16 +59,23 @@ export function NoticeFormSheet({ open, onOpenChange, notice }: NoticeFormSheetP
   // 시트가 열릴 때마다 대상 값으로 초기화한다.
   React.useEffect(() => {
     if (open) {
-      form.reset({ title: notice?.title ?? "", content: notice?.content ?? "" });
+      form.reset({
+        title: notice?.title ?? "",
+        content: notice?.content ?? "",
+      });
     }
   }, [open, notice, form]);
 
   const onSubmit = (values: NoticeFormValues) => {
     startTransition(async () => {
-      const result = notice ? await updateNoticeAction(notice.id, values) : await createNoticeAction(values);
+      const result = notice
+        ? await updateNoticeAction(notice.id, values)
+        : await createNoticeAction(values);
 
       if (result.success) {
-        toast.success(isEdit ? "공지사항이 수정되었습니다." : "공지사항이 등록되었습니다.");
+        toast.success(
+          isEdit ? "공지사항이 수정되었습니다." : "공지사항이 등록되었습니다.",
+        );
         onOpenChange(false);
       } else {
         toast.error(result.message ?? "처리 중 오류가 발생했습니다.");
@@ -70,7 +89,9 @@ export function NoticeFormSheet({ open, onOpenChange, notice }: NoticeFormSheetP
         <SheetHeader>
           <SheetTitle>{isEdit ? "공지사항 수정" : "공지사항 등록"}</SheetTitle>
           <SheetDescription>
-            {isEdit ? "공지사항의 제목과 내용을 수정합니다." : "새로운 공지사항을 등록합니다."}
+            {isEdit
+              ? "공지사항의 제목과 내용을 수정합니다."
+              : "새로운 공지사항을 등록합니다."}
           </SheetDescription>
         </SheetHeader>
 
@@ -94,7 +115,9 @@ export function NoticeFormSheet({ open, onOpenChange, notice }: NoticeFormSheetP
                     maxLength={NOTICE_TITLE_MAX}
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />
@@ -112,7 +135,9 @@ export function NoticeFormSheet({ open, onOpenChange, notice }: NoticeFormSheetP
                     rows={10}
                     aria-invalid={fieldState.invalid}
                   />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
                 </Field>
               )}
             />

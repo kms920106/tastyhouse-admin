@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { NoticeListItem } from "@/data/notices/schema";
+import type { NoticeListItem } from "@/data/notice/notice.dto";
 
 import { formatDateTime } from "./utils";
 
@@ -35,18 +35,26 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
   {
     accessorKey: "title",
     header: "제목",
-    cell: ({ row }) => <span className="line-clamp-1 font-medium">{row.original.title}</span>,
+    cell: ({ row }) => (
+      <span className="line-clamp-1 font-medium">{row.original.title}</span>
+    ),
   },
   {
     accessorKey: "content",
     header: "내용",
-    cell: ({ row }) => <span className="line-clamp-1 max-w-md text-muted-foreground">{row.original.content}</span>,
+    cell: ({ row }) => (
+      <span className="line-clamp-1 max-w-md text-muted-foreground">
+        {row.original.content}
+      </span>
+    ),
   },
   {
     accessorKey: "createdAt",
     header: "생성일시",
     cell: ({ row }) => (
-      <span className="whitespace-nowrap tabular-nums">{formatDateTime(row.original.createdAt)}</span>
+      <span className="whitespace-nowrap tabular-nums">
+        {formatDateTime(row.original.createdAt)}
+      </span>
     ),
   },
   {
@@ -60,15 +68,27 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
         <div className="text-right">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="size-8" aria-label="공지 작업 메뉴">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                aria-label="공지 작업 메뉴"
+              >
                 <MoreHorizontal className="size-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={() => meta.onView(notice)}>상세 보기</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => meta.onEdit(notice)}>수정</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => meta.onView(notice)}>
+                상세 보기
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => meta.onEdit(notice)}>
+                수정
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onSelect={() => meta.onDelete(notice)}>
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => meta.onDelete(notice)}
+              >
                 삭제
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -1,0 +1,87 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+
+import type { NoticeDetail } from "@/data/notice/notice.dto";
+import { noticeRepository } from "@/data/notice/notice.repository";
+
+import { noticeFormSchema, type NoticeFormValues } from "./schema";
+
+const NOTICES_PATH = "/dashboard/notices";
+
+export interface ActionResult {
+  success: boolean;
+  message?: string;
+  id?: number;
+}
+
+export interface NoticeDetailResult {
+  success: boolean;
+  message?: string;
+  data?: NoticeDetail;
+}
+
+// 공지사항 상세 조회
+export async function fetchNoticeAction(
+  id: number,
+): Promise<NoticeDetailResult> {
+  const res = await noticeRepository.getDetail(id);
+  if (res.error !== undefined) {
+    return { success: false, message: res.error };
+  }
+  return { success: true, data: res.data };
+}
+
+// 공지사항 등록
+export async function createNoticeAction(
+  values: NoticeFormValues,
+): Promise<ActionResult> {
+  const parsed = noticeFormSchema.safeParse(values);
+  if (!parsed.success) {
+    return {
+      success: false,
+      message: parsed.error.issues[0]?.message ?? "입력값이 올바르지 않습니다.",
+    };
+  }
+
+  const res = await noticeRepository.create(parsed.data);
+  if (res.error !== undefined) {
+    return { success: false, message: res.error };
+  }
+
+  revalidatePath(NOTICES_PATH);
+  return { success: true, id: res.data };
+}
+
+// 공지사항 수정
+export async function updateNoticeAction(
+  id: number,
+  values: NoticeFormValues,
+): Promise<ActionResult> {
+  const parsed = noticeFormSchema.safeParse(values);
+  if (!parsed.success) {
+    return {
+      success: false,
+      message: parsed.error.issues[0]?.message ?? "입력값이 올바르지 않습니다.",
+    };
+  }
+
+  const res = await noticeRepository.update(id, parsed.data);
+  if (res.error !== undefined) {
+    return { success: false, message: res.error };
+  }
+
+  revalidatePath(NOTICES_PATH);
+  return { success: true };
+}
+
+// 공지사항 삭제
+export async function deleteNoticeAction(id: number): Promise<ActionResult> {
+  const res = await noticeRepository.remove(id);
+  if (res.error !== undefined) {
+    return { success: false, message: res.error };
+  }
+
+  revalidatePath(NOTICES_PATH);
+  return { success: true };
+}

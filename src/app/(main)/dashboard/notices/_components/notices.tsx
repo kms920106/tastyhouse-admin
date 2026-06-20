@@ -7,8 +7,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import {
   getCoreRowModel,
-  useReactTable,
   type PaginationState,
+  useReactTable,
 } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
@@ -22,22 +22,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { NoticeListItem } from "@/data/notices/schema";
+import type { NoticeListItem } from "@/data/notice/notice.dto";
 import type { ApiPagination } from "@/lib/api/types";
 
 import { DeleteNoticeDialog } from "./delete-notice-dialog";
 import { NoticeDetailSheet } from "./notice-detail-sheet";
 import { NoticeFormSheet } from "./notice-form-sheet";
-import { noticesColumns, type NoticesTableMeta } from "./notices-columns";
+import { type NoticesTableMeta, noticesColumns } from "./notices-columns";
 import { NoticesTable } from "./notices-table";
 
-interface NoticesProps {
-  items: NoticeListItem[];
+interface Props {
+  notices: NoticeListItem[];
   pagination: ApiPagination;
   loadError?: string;
 }
 
-export function Notices({ items, pagination, loadError }: NoticesProps) {
+export function Notices({ notices, pagination, loadError }: Props) {
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -71,7 +71,7 @@ export function Notices({ items, pagination, loadError }: NoticesProps) {
   }
 
   const table = useReactTable({
-    data: items,
+    data: notices,
     columns: noticesColumns,
     state: {
       pagination: { pageIndex: pagination.page, pageSize: pagination.size },
@@ -118,7 +118,6 @@ export function Notices({ items, pagination, loadError }: NoticesProps) {
       <CardContent className="flex flex-col gap-4 px-0">
         <NoticesTable table={table} />
       </CardContent>
-
       <NoticeFormSheet
         open={formOpen}
         onOpenChange={setFormOpen}
