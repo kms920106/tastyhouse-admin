@@ -12,6 +12,7 @@ import {
   Lock,
   type LucideIcon,
   Mail,
+  Megaphone,
   MessageSquare,
   ReceiptText,
   ShoppingBag,
@@ -121,6 +122,11 @@ export const sidebarItems: NavGroup[] = [
         title: "Invoice",
         url: "/dashboard/invoice",
         icon: ReceiptText,
+      },
+      {
+        title: "공지사항",
+        url: "/dashboard/notices",
+        icon: Megaphone,
       },
       {
         title: "Users",

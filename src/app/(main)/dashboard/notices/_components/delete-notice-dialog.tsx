@@ -1,0 +1,66 @@
+"use client";
+
+import * as React from "react";
+
+import { toast } from "sonner";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { deleteNoticeAction } from "@/data/notices/actions";
+import type { NoticeListItem } from "@/data/notices/schema";
+
+interface DeleteNoticeDialogProps {
+  /** 삭제 대상. null 이면 닫힌 상태. */
+  notice: NoticeListItem | null;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function DeleteNoticeDialog({ notice, onOpenChange }: DeleteNoticeDialogProps) {
+  const [isPending, startTransition] = React.useTransition();
+
+  function handleDelete() {
+    if (!notice) return;
+    startTransition(async () => {
+      const result = await deleteNoticeAction(notice.id);
+      if (result.success) {
+        toast.success("공지사항이 삭제되었습니다.");
+        onOpenChange(false);
+      } else {
+        toast.error(result.message ?? "삭제 중 오류가 발생했습니다.");
+      }
+    });
+  }
+
+  return (
+    <AlertDialog open={notice != null} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>공지사항을 삭제하시겠습니까?</AlertDialogTitle>
+          <AlertDialogDescription>
+            {notice ? `"${notice.title}" 공지사항이 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.` : ""}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={isPending}>취소</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={(event) => {
+              event.preventDefault();
+              handleDelete();
+            }}
+            disabled={isPending}
+          >
+            {isPending ? "삭제 중..." : "삭제"}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
