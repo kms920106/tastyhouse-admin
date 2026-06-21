@@ -112,7 +112,9 @@ export function NoticesTable({
                       className="px-3 py-4 align-middle"
                       style={{ width: column.getSize() }}
                     >
-                      <Skeleton className="h-8 w-full" />
+                      <div className="flex h-8 items-center">
+                        <Skeleton className="h-5 w-full" />
+                      </div>
                     </TableCell>
                   ))}
                 </TableRow>
