@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { NoticeListItem } from "@/data/notice/notice.dto";
 
-import { NOTICE_COLUMN_WIDTH } from "./notices-column-config";
 import { formatDateTime } from "./utils";
 
 export interface NoticesTableMeta {
@@ -30,7 +29,9 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
     accessorKey: "id",
     header: "ID",
     cell: ({ row }) => <span className="tabular-nums">{row.original.id}</span>,
-    ...NOTICE_COLUMN_WIDTH.id,
+    size: 80,
+    minSize: 80,
+    maxSize: 80,
   },
   {
     accessorKey: "title",
@@ -38,7 +39,9 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
     cell: ({ row }) => (
       <span className="line-clamp-1 font-medium">{row.original.title}</span>
     ),
-    ...NOTICE_COLUMN_WIDTH.title,
+    size: 320,
+    minSize: 200,
+    maxSize: 360,
   },
   {
     accessorKey: "content",
@@ -48,17 +51,20 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
         {row.original.content}
       </span>
     ),
-    ...NOTICE_COLUMN_WIDTH.content,
+    size: 480,
+    minSize: 280,
   },
   {
     accessorKey: "visible",
-    header: "노출",
+    header: "노출 여부",
     cell: ({ row }) => (
       <Badge variant={row.original.visible ? "default" : "secondary"}>
-        {row.original.visible ? "노출" : "비노출"}
+        {row.original.visible ? "노출" : "미노출"}
       </Badge>
     ),
-    ...NOTICE_COLUMN_WIDTH.visible,
+    size: 100,
+    minSize: 100,
+    maxSize: 100,
   },
   {
     accessorKey: "createdAt",
@@ -68,7 +74,9 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
         {formatDateTime(row.original.createdAt)}
       </span>
     ),
-    ...NOTICE_COLUMN_WIDTH.createdAt,
+    size: 180,
+    minSize: 180,
+    maxSize: 180,
   },
   {
     id: "actions",
@@ -111,6 +119,8 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
     },
     enableSorting: false,
     enableHiding: false,
-    ...NOTICE_COLUMN_WIDTH.actions,
+    size: 80,
+    minSize: 80,
+    maxSize: 80,
   },
 ];

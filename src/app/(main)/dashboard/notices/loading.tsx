@@ -17,9 +17,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { NOTICE_COLUMNS } from "./_components/notices-column-config";
-
 const SKELETON_ROW_COUNT = 10;
+
+const SKELETON_COLUMNS = [
+  { id: "id", header: "ID", width: 80, align: "left" },
+  { id: "title", header: "제목", width: 320, align: "left" },
+  { id: "content", header: "내용", width: 480, align: "left" },
+  { id: "visible", header: "노출 여부", width: 100, align: "left" },
+  { id: "createdAt", header: "생성일시", width: 180, align: "left" },
+  { id: "actions", header: "작업", width: 80, align: "right" },
+] as const;
 
 export default function NoticesLoading() {
   return (
@@ -40,7 +47,7 @@ export default function NoticesLoading() {
             <Table className="table-fixed **:data-[slot='table-cell']:px-4 **:data-[slot='table-head']:px-4">
               <TableHeader className="[&_tr]:border-t">
                 <TableRow>
-                  {NOTICE_COLUMNS.map((column) => (
+                  {SKELETON_COLUMNS.map((column) => (
                     <TableHead
                       key={column.id}
                       className={`py-4 font-normal${column.align === "right" ? " text-right" : ""}`}
@@ -57,7 +64,7 @@ export default function NoticesLoading() {
                   (_, index) => `notice-row-skeleton-${index}`,
                 ).map((key) => (
                   <TableRow key={key} className="border-border/60">
-                    {NOTICE_COLUMNS.map((column) => (
+                    {SKELETON_COLUMNS.map((column) => (
                       <TableCell
                         key={column.id}
                         className="px-3 py-4 align-middle"
