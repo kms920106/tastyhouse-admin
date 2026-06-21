@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { NoticeListItem } from "@/data/notice/notice.dto";
 import { deleteNoticeAction } from "@/feature/notice/actions";
+import { NOTICE_MESSAGE } from "@/feature/notice/message";
 
 interface DeleteNoticeDialogProps {
   notice: NoticeListItem | null;
@@ -33,10 +34,10 @@ export function DeleteNoticeDialog({
     startTransition(async () => {
       const result = await deleteNoticeAction(notice.id);
       if (result.success) {
-        toast.success("공지사항이 삭제되었습니다.");
+        toast.success(NOTICE_MESSAGE.DELETE_SUCCESS);
         onOpenChange(false);
       } else {
-        toast.error(result.message ?? "삭제 중 오류가 발생했습니다.");
+        toast.error(result.message ?? NOTICE_MESSAGE.DELETE_FAILED);
       }
     });
   }

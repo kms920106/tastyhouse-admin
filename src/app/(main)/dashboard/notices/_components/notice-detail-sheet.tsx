@@ -17,6 +17,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import type { NoticeDetail } from "@/data/notice/notice.dto";
 import { fetchNoticeAction } from "@/feature/notice/actions";
+import { NOTICE_MESSAGE } from "@/feature/notice/message";
 
 import { formatDateTime } from "./utils";
 
@@ -49,7 +50,7 @@ export function NoticeDetailSheet({
       if (result.success && result.data) {
         setDetail(result.data);
       } else {
-        setError(result.message ?? "공지사항을 불러올 수 없습니다.");
+        setError(result.message ?? NOTICE_MESSAGE.DETAIL_LOAD_FAILED);
       }
       setIsLoading(false);
     });

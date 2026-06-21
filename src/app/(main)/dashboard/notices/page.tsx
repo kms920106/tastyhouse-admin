@@ -1,33 +1,28 @@
 import { noticeRepository } from "@/data/notice/notice.repository";
-import type { ApiPagination } from "@/lib/api/types";
-
+import { NOTICE_MESSAGE } from "@/feature/notice/message";
+import logger from "@/lib/logger";
+import { parseNonNegativeInt } from "@/lib/utils";
 import { Notices } from "./_components/notices";
 
-function parsePositiveInt(value: string | undefined, fallback: number): number {
-  const parsed = Number(value);
-  return Number.isInteger(parsed) && parsed >= 0 ? parsed : fallback;
-}
-
-interface Props {
-  searchParams: Promise<{ page?: string; size?: string }>;
-}
-
-export default async function Page({ searchParams }: Props) {
+export default async function Page({
+  searchParams,
+}: PageProps<"/dashboard/notices">) {
   const { page: pageParam, size: sizeParam } = await searchParams;
-  const page = parsePositiveInt(pageParam, 0);
-  const size = parsePositiveInt(sizeParam, 10);
+  const page = parseNonNegativeInt(pageParam, 0);
+  const size = parseNonNegativeInt(sizeParam, 10);
 
-  const res = await noticeRepository.getList({ page, size });
-
-  const data = res.data ?? [];
-  const pagination: ApiPagination = res.pagination ?? {
+  const { error, data, pagination } = await noticeRepository.getList({
     page,
     size,
-    totalElements: 0,
-    totalPages: 0,
-  };
+  });
 
-  return (
-    <Notices notices={data} pagination={pagination} loadError={res.error} />
-  );
+  if (error || !data || !pagination) {
+    logger.error(
+      { reason: error, data, pagination },
+      "공지사항 목록 조회 실패",
+    );
+    throw new Error(NOTICE_MESSAGE.LIST_LOAD_FAILED);
+  }
+
+  return <Notices notices={data} pagination={pagination} />;
 }

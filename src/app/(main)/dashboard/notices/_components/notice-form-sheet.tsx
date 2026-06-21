@@ -29,6 +29,7 @@ import {
   createNoticeAction,
   updateNoticeAction,
 } from "@/feature/notice/actions";
+import { NOTICE_MESSAGE } from "@/feature/notice/message";
 import {
   NOTICE_CONTENT_MAX,
   NOTICE_TITLE_MAX,
@@ -74,11 +75,13 @@ export function NoticeFormSheet({
 
       if (result.success) {
         toast.success(
-          isEdit ? "공지사항이 수정되었습니다." : "공지사항이 등록되었습니다.",
+          isEdit
+            ? NOTICE_MESSAGE.UPDATE_SUCCESS
+            : NOTICE_MESSAGE.CREATE_SUCCESS,
         );
         onOpenChange(false);
       } else {
-        toast.error(result.message ?? "처리 중 오류가 발생했습니다.");
+        toast.error(result.message ?? NOTICE_MESSAGE.CREATE_UPDATE_FAILED);
       }
     });
   };
