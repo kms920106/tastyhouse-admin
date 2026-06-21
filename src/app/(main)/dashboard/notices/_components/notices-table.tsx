@@ -14,23 +14,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { NoticeListItem } from "@/data/notice/notice.dto";
 
 import type { NoticesTableMeta } from "./notices-columns";
@@ -46,20 +33,18 @@ function getPageNumbers(currentPage: number, pageCount: number) {
   }
 
   if (currentPage <= 2) return [1, 2, 3];
-  if (currentPage >= pageCount - 1)
-    return [pageCount - 2, pageCount - 1, pageCount];
+  if (currentPage >= pageCount - 1) return [pageCount - 2, pageCount - 1, pageCount];
 
   return [currentPage - 1, currentPage, currentPage + 1];
 }
 
-export function NoticesTable({ table }: { table: TableType<NoticeListItem> }) {
+export function NoticesTable({ table, isPending }: { table: TableType<NoticeListItem>; isPending: boolean }) {
   const pageCount = Math.max(table.getPageCount(), 1);
-  const currentPage = Math.min(
-    table.getState().pagination.pageIndex + 1,
-    pageCount,
-  );
+  const currentPage = Math.min(table.getState().pagination.pageIndex + 1, pageCount);
   const pageNumbers = getPageNumbers(currentPage, pageCount);
-  const rowsPerPage = `${table.getState().pagination.pageSize}`;
+  const pageSize = table.getState().pagination.pageSize;
+  const rowsPerPage = `${pageSize}`;
+  const columnCount = table.getVisibleLeafColumns().length;
   const totalElements = (table.options.meta as NoticesTableMeta).totalElements;
 
   return (
@@ -71,12 +56,7 @@ export function NoticesTable({ table }: { table: TableType<NoticeListItem> }) {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id} className="py-4 font-normal">
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
               </TableRow>
@@ -84,28 +64,27 @@ export function NoticesTable({ table }: { table: TableType<NoticeListItem> }) {
           </TableHeader>
 
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {isPending ? (
+              Array.from({ length: pageSize }, (_, index) => `notice-row-skeleton-${index}`).map((key) => (
+                <TableRow key={key} className="border-border/60">
+                  <TableCell colSpan={columnCount} className="px-3 py-4">
+                    <Skeleton className="h-6 w-full" />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  className="border-border/60 hover:bg-white/2.5"
-                >
+                <TableRow key={row.id} className="border-border/60 hover:bg-white/2.5">
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="px-3 py-4 align-middle">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={table.getVisibleLeafColumns().length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={table.getVisibleLeafColumns().length} className="h-24 text-center">
                   등록된 공지사항이 없습니다.
                 </TableCell>
               </TableRow>
@@ -123,12 +102,9 @@ export function NoticesTable({ table }: { table: TableType<NoticeListItem> }) {
             <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => table.setPageSize(Number(value))}
+              disabled={isPending}
             >
-              <SelectTrigger
-                size="sm"
-                className="w-20"
-                id="notices-rows-per-page"
-              >
+              <SelectTrigger size="sm" className="w-20" id="notices-rows-per-page">
                 <SelectValue placeholder={rowsPerPage} />
               </SelectTrigger>
               <SelectContent side="top">
@@ -153,11 +129,7 @@ export function NoticesTable({ table }: { table: TableType<NoticeListItem> }) {
               <PaginationPrevious
                 href="#"
                 text=""
-                className={
-                  !table.getCanPreviousPage()
-                    ? "pointer-events-none opacity-50"
-                    : undefined
-                }
+                className={!table.getCanPreviousPage() || isPending ? "pointer-events-none opacity-50" : undefined}
                 onClick={(event) => {
                   preventNavigation(event);
                   table.previousPage();
@@ -173,9 +145,8 @@ export function NoticesTable({ table }: { table: TableType<NoticeListItem> }) {
               <PaginationItem key={`page-${pageNumber}`}>
                 <PaginationLink
                   href="#"
-                  isActive={
-                    table.getState().pagination.pageIndex === pageNumber - 1
-                  }
+                  isActive={table.getState().pagination.pageIndex === pageNumber - 1}
+                  className={isPending ? "pointer-events-none opacity-50" : undefined}
                   onClick={(event) => {
                     preventNavigation(event);
                     table.setPageIndex(pageNumber - 1);
@@ -194,11 +165,7 @@ export function NoticesTable({ table }: { table: TableType<NoticeListItem> }) {
               <PaginationNext
                 href="#"
                 text=""
-                className={
-                  !table.getCanNextPage()
-                    ? "pointer-events-none opacity-50"
-                    : undefined
-                }
+                className={!table.getCanNextPage() || isPending ? "pointer-events-none opacity-50" : undefined}
                 onClick={(event) => {
                   preventNavigation(event);
                   table.nextPage();

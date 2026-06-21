@@ -33,12 +33,15 @@ export function Notices({ notices, pagination }: Props) {
   const [editing, setEditing] = React.useState<NoticeListItem | null>(null);
   const [detailId, setDetailId] = React.useState<number | null>(null);
   const [deleting, setDeleting] = React.useState<NoticeListItem | null>(null);
+  const [isPending, startTransition] = React.useTransition();
 
   function pushParams(next: { page?: number; size?: number }) {
     const params = new URLSearchParams(searchParams.toString());
     if (next.page !== undefined) params.set("page", String(next.page));
     if (next.size !== undefined) params.set("size", String(next.size));
-    router.push(`?${params.toString()}`);
+    startTransition(() => {
+      router.push(`?${params.toString()}`);
+    });
   }
 
   function openCreate() {
@@ -96,7 +99,7 @@ export function Notices({ notices, pagination }: Props) {
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 px-0">
-        <NoticesTable table={table} />
+        <NoticesTable table={table} isPending={isPending} />
       </CardContent>
       <NoticeFormSheet open={formOpen} onOpenChange={setFormOpen} notice={editing} />
       <NoticeDetailSheet noticeId={detailId} onOpenChange={(open) => !open && setDetailId(null)} />
