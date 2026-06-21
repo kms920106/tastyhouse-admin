@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/table";
 
 import {
-  NOTICE_COLUMN_TOTAL_WIDTH,
   NOTICE_COLUMNS,
   noticeSkeletonClass,
 } from "./_components/notices-column-config";
@@ -41,10 +40,7 @@ export default function NoticesLoading() {
       <CardContent className="flex flex-col gap-4 px-0">
         <div className="flex flex-1 flex-col gap-4">
           <div>
-            <Table
-              className="table-fixed **:data-[slot='table-cell']:px-4 **:data-[slot='table-head']:px-4"
-              style={{ minWidth: NOTICE_COLUMN_TOTAL_WIDTH }}
-            >
+            <Table className="table-fixed **:data-[slot='table-cell']:px-4 **:data-[slot='table-head']:px-4">
               <TableHeader className="[&_tr]:border-t">
                 <TableRow>
                   {NOTICE_COLUMNS.map((column) => (
@@ -70,7 +66,9 @@ export default function NoticesLoading() {
                         className="px-3 py-4 align-middle"
                         style={{ width: column.width }}
                       >
-                        <Skeleton className={noticeSkeletonClass(column.align)} />
+                        <Skeleton
+                          className={noticeSkeletonClass(column.align)}
+                        />
                       </TableCell>
                     ))}
                   </TableRow>

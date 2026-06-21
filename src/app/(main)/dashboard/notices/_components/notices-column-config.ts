@@ -64,12 +64,6 @@ export const NOTICE_COLUMN_WIDTH: Record<
   { size: number; minSize: number; maxSize?: number }
 >;
 
-/** loading.tsx(react-table 인스턴스 없음)의 table-fixed minWidth 계산용 너비 합계. */
-export const NOTICE_COLUMN_TOTAL_WIDTH = NOTICE_COLUMNS.reduce(
-  (sum, column) => sum + column.width,
-  0,
-);
-
 /** 컬럼 id로 설정을 조회하는 맵. react-table leaf column(id만 보유)에서 align 등 메타 조회용. */
 export const NOTICE_COLUMN_BY_ID: Record<NoticeColumnId, NoticeColumnConfig> =
   Object.fromEntries(
