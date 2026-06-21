@@ -24,13 +24,6 @@ export class ApiError extends Error {
   }
 }
 
-export function unwrap<T>(response: ApiResponse<T>): ApiResponse<T> {
-  if (response.error !== undefined) {
-    throw new ApiError(response.error, response.status, response.errorCode);
-  }
-  return response;
-}
-
 class ApiClient {
   private baseURL: string;
   private withAuth: boolean;
