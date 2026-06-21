@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import type { NoticeDetail } from "@/data/notice/notice.dto";
 import { noticeRepository } from "@/data/notice/notice.repository";
 
+import { NOTICE_MESSAGE } from "./message";
 import { noticeFormSchema, type NoticeFormValues } from "./schema";
 
 const NOTICES_PATH = "/dashboard/notices";
@@ -40,7 +41,7 @@ export async function createNoticeAction(
   if (!parsed.success) {
     return {
       success: false,
-      message: parsed.error.issues[0]?.message ?? "입력값이 올바르지 않습니다.",
+      message: parsed.error.issues[0]?.message ?? NOTICE_MESSAGE.INVALID_INPUT,
     };
   }
 
@@ -62,7 +63,7 @@ export async function updateNoticeAction(
   if (!parsed.success) {
     return {
       success: false,
-      message: parsed.error.issues[0]?.message ?? "입력값이 올바르지 않습니다.",
+      message: parsed.error.issues[0]?.message ?? NOTICE_MESSAGE.INVALID_INPUT,
     };
   }
 
