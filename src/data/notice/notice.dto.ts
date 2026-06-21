@@ -2,6 +2,7 @@ export interface NoticeListItem {
   id: number;
   title: string;
   content: string;
+  visible: boolean;
   createdAt: string;
 }
 
@@ -9,12 +10,13 @@ export interface NoticeDetail {
   id: number;
   title: string;
   content: string;
+  visible: boolean;
   createdAt: string;
-  active: boolean;
   updatedAt: string;
 }
 
 export interface NoticeRequest {
   title: string;
   content: string;
+  visible: boolean;
 }

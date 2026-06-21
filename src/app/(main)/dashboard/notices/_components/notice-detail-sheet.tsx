@@ -85,8 +85,8 @@ export function NoticeDetailSheet({
                 <h3 className="font-semibold text-lg leading-snug">
                   {detail.title}
                 </h3>
-                <Badge variant={detail.active ? "default" : "secondary"}>
-                  {detail.active ? "활성" : "비활성"}
+                <Badge variant={detail.visible ? "default" : "secondary"}>
+                  {detail.visible ? "노출" : "비노출"}
                 </Badge>
               </div>
 

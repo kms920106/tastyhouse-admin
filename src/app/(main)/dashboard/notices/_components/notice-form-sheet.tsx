@@ -14,6 +14,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Sheet,
   SheetClose,
@@ -41,7 +42,7 @@ interface NoticeFormSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   /** 수정 대상. 없으면 생성 모드. */
-  notice?: Pick<NoticeListItem, "id" | "title" | "content"> | null;
+  notice?: Pick<NoticeListItem, "id" | "title" | "content" | "visible"> | null;
 }
 
 export function NoticeFormSheet({
@@ -54,7 +55,7 @@ export function NoticeFormSheet({
 
   const form = useForm<NoticeFormValues>({
     resolver: zodResolver(noticeFormSchema),
-    defaultValues: { title: "", content: "" },
+    defaultValues: { title: "", content: "", visible: true },
   });
 
   // 시트가 열릴 때마다 대상 값으로 초기화한다.
@@ -63,6 +64,7 @@ export function NoticeFormSheet({
       form.reset({
         title: notice?.title ?? "",
         content: notice?.content ?? "",
+        visible: notice?.visible ?? true,
       });
     }
   }, [open, notice, form]);
@@ -141,6 +143,20 @@ export function NoticeFormSheet({
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
+                </Field>
+              )}
+            />
+            <Controller
+              control={form.control}
+              name="visible"
+              render={({ field }) => (
+                <Field orientation="horizontal">
+                  <FieldLabel htmlFor="notice-visible">노출 여부</FieldLabel>
+                  <Switch
+                    id="notice-visible"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
                 </Field>
               )}
             />

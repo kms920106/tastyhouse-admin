@@ -18,6 +18,7 @@ export const noticeFormSchema = z.object({
     .max(NOTICE_CONTENT_MAX, {
       message: `내용은 최대 ${NOTICE_CONTENT_MAX}자까지 입력할 수 있습니다.`,
     }),
+  visible: z.boolean(),
 });
 
 export type NoticeFormValues = z.infer<typeof noticeFormSchema>;

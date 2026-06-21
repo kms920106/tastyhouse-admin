@@ -2,6 +2,7 @@ export type NoticeColumnId =
   | "id"
   | "title"
   | "content"
+  | "visible"
   | "createdAt"
   | "actions";
 
@@ -32,6 +33,14 @@ export const NOTICE_COLUMNS: readonly NoticeColumnConfig[] = [
     maxWidth: 360,
   },
   { id: "content", header: "내용", align: "left", width: 480, minWidth: 280 },
+  {
+    id: "visible",
+    header: "노출",
+    align: "left",
+    width: 100,
+    minWidth: 100,
+    maxWidth: 100,
+  },
   {
     id: "createdAt",
     header: "생성일시",

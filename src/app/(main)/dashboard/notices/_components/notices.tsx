@@ -5,11 +5,22 @@ import * as React from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { getCoreRowModel, type PaginationState, useReactTable } from "@tanstack/react-table";
+import {
+  getCoreRowModel,
+  type PaginationState,
+  useReactTable,
+} from "@tanstack/react-table";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { NoticeListItem } from "@/data/notice/notice.dto";
 import type { ApiPagination } from "@/lib/api/types";
 
@@ -90,7 +101,8 @@ export function Notices({ notices, pagination }: Props) {
       <CardHeader className="border-b has-data-[slot=card-action]:grid-cols-1 md:has-data-[slot=card-action]:grid-cols-[1fr_auto]">
         <CardTitle className="text-xl leading-none">공지사항</CardTitle>
         <CardDescription className="max-w-sm leading-snug">
-          서비스 공지사항을 등록하고 관리합니다. 활성화된 공지만 목록에 표시됩니다.
+          서비스 공지사항을 등록하고 관리합니다. 활성화된 공지만 목록에
+          표시됩니다.
         </CardDescription>
         <CardAction className="col-start-1 row-start-auto flex w-full flex-wrap justify-start gap-2 justify-self-stretch md:col-start-2 md:row-span-2 md:row-start-1 md:w-auto md:flex-nowrap md:justify-end md:justify-self-end">
           <Button size="sm" onClick={openCreate}>
@@ -101,9 +113,19 @@ export function Notices({ notices, pagination }: Props) {
       <CardContent className="flex flex-col gap-4 px-0">
         <NoticesTable table={table} isPending={isPending} />
       </CardContent>
-      <NoticeFormSheet open={formOpen} onOpenChange={setFormOpen} notice={editing} />
-      <NoticeDetailSheet noticeId={detailId} onOpenChange={(open) => !open && setDetailId(null)} />
-      <DeleteNoticeDialog notice={deleting} onOpenChange={(open) => !open && setDeleting(null)} />
+      <NoticeFormSheet
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        notice={editing}
+      />
+      <NoticeDetailSheet
+        noticeId={detailId}
+        onOpenChange={(open) => !open && setDetailId(null)}
+      />
+      <DeleteNoticeDialog
+        notice={deleting}
+        onOpenChange={(open) => !open && setDeleting(null)}
+      />
     </Card>
   );
 }

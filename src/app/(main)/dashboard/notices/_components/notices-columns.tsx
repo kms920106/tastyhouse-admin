@@ -4,6 +4,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -48,6 +49,16 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
       </span>
     ),
     ...NOTICE_COLUMN_WIDTH.content,
+  },
+  {
+    accessorKey: "visible",
+    header: "노출",
+    cell: ({ row }) => (
+      <Badge variant={row.original.visible ? "default" : "secondary"}>
+        {row.original.visible ? "노출" : "비노출"}
+      </Badge>
+    ),
+    ...NOTICE_COLUMN_WIDTH.visible,
   },
   {
     accessorKey: "createdAt",
