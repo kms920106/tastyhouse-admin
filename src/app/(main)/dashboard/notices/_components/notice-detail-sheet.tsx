@@ -19,7 +19,7 @@ import type { NoticeDetail } from "@/data/notice/notice.dto";
 import { fetchNoticeAction } from "@/feature/notice/actions";
 import { NOTICE_MESSAGE } from "@/feature/notice/message";
 
-import { formatDateTime } from "./utils";
+import { formatDateTime } from "@/lib/date";
 
 interface NoticeDetailSheetProps {
   /** 조회할 공지 ID. null 이면 닫힌 상태. */

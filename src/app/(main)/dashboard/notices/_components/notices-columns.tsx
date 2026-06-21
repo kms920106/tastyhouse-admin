@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { NoticeListItem } from "@/data/notice/notice.dto";
 
-import { formatDateTime } from "./utils";
+import { formatDateTime } from "@/lib/date";
 
 export interface NoticesTableMeta {
   totalElements: number;
