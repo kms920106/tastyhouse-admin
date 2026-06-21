@@ -69,14 +69,3 @@ export const NOTICE_COLUMN_BY_ID: Record<NoticeColumnId, NoticeColumnConfig> =
   Object.fromEntries(
     NOTICE_COLUMNS.map((column) => [column.id, column]),
   ) as Record<NoticeColumnId, NoticeColumnConfig>;
-
-/**
- * 로딩 스켈레톤 바의 클래스를 컬럼 정렬로 파생한다.
- * 셀 너비는 table-fixed가 고정하므로 스켈레톤 바는 셀을 채우고,
- * 우측 정렬 컬럼(작업)만 메뉴 버튼 모양(size-8)을 유지한다.
- */
-export function noticeSkeletonClass(
-  align: NoticeColumnConfig["align"] | undefined,
-): string {
-  return align === "right" ? "ml-auto size-8" : "h-5 w-full";
-}

@@ -17,10 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import {
-  NOTICE_COLUMNS,
-  noticeSkeletonClass,
-} from "./_components/notices-column-config";
+import { NOTICE_COLUMNS } from "./_components/notices-column-config";
 
 const SKELETON_ROW_COUNT = 10;
 
@@ -66,9 +63,7 @@ export default function NoticesLoading() {
                         className="px-3 py-4 align-middle"
                         style={{ width: column.width }}
                       >
-                        <Skeleton
-                          className={noticeSkeletonClass(column.align)}
-                        />
+                        <Skeleton className="h-8 w-full" />
                       </TableCell>
                     ))}
                   </TableRow>
