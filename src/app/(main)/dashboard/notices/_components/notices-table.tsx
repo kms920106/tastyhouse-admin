@@ -20,6 +20,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { NoticeListItem } from "@/data/notice/notice.dto";
 
+import { NOTICE_COLUMN_BY_ID, type NoticeColumnId, noticeSkeletonClass } from "./notices-column-config";
 import type { NoticesTableMeta } from "./notices-columns";
 
 function preventNavigation(event: MouseEvent<HTMLAnchorElement>) {
@@ -44,18 +45,21 @@ export function NoticesTable({ table, isPending }: { table: TableType<NoticeList
   const pageNumbers = getPageNumbers(currentPage, pageCount);
   const pageSize = table.getState().pagination.pageSize;
   const rowsPerPage = `${pageSize}`;
-  const columnCount = table.getVisibleLeafColumns().length;
+  const leafColumns = table.getVisibleLeafColumns();
   const totalElements = (table.options.meta as NoticesTableMeta).totalElements;
 
   return (
     <div className="flex flex-1 flex-col gap-4">
       <div>
-        <Table className="**:data-[slot='table-cell']:px-4 **:data-[slot='table-head']:px-4">
+        <Table
+          className="table-fixed **:data-[slot='table-cell']:px-4 **:data-[slot='table-head']:px-4"
+          style={{ minWidth: table.getTotalSize() }}
+        >
           <TableHeader className="[&_tr]:border-t">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="py-4 font-normal">
+                  <TableHead key={header.id} className="py-4 font-normal" style={{ width: header.getSize() }}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
@@ -67,16 +71,18 @@ export function NoticesTable({ table, isPending }: { table: TableType<NoticeList
             {isPending ? (
               Array.from({ length: pageSize }, (_, index) => `notice-row-skeleton-${index}`).map((key) => (
                 <TableRow key={key} className="border-border/60">
-                  <TableCell colSpan={columnCount} className="px-3 py-4">
-                    <Skeleton className="h-6 w-full" />
-                  </TableCell>
+                  {leafColumns.map((column) => (
+                    <TableCell key={column.id} className="px-3 py-4 align-middle" style={{ width: column.getSize() }}>
+                      <Skeleton className={noticeSkeletonClass(NOTICE_COLUMN_BY_ID[column.id as NoticeColumnId]?.align)} />
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))
             ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} className="border-border/60 hover:bg-white/2.5">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-3 py-4 align-middle">
+                    <TableCell key={cell.id} className="px-3 py-4 align-middle" style={{ width: cell.column.getSize() }}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

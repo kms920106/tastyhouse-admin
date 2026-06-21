@@ -14,11 +14,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { NoticeListItem } from "@/data/notice/notice.dto";
 
+import { NOTICE_COLUMN_WIDTH } from "./notices-column-config";
 import { formatDateTime } from "./utils";
 
-/** 공지 테이블 셀에서 접근하는 콜백/메타 값. */
 export interface NoticesTableMeta {
-  /** 서버 전체 항목 수 (manualPagination 이라 row 수로 알 수 없음). */
   totalElements: number;
   onView: (notice: NoticeListItem) => void;
   onEdit: (notice: NoticeListItem) => void;
@@ -30,7 +29,7 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
     accessorKey: "id",
     header: "ID",
     cell: ({ row }) => <span className="tabular-nums">{row.original.id}</span>,
-    size: 64,
+    ...NOTICE_COLUMN_WIDTH.id,
   },
   {
     accessorKey: "title",
@@ -38,15 +37,17 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
     cell: ({ row }) => (
       <span className="line-clamp-1 font-medium">{row.original.title}</span>
     ),
+    ...NOTICE_COLUMN_WIDTH.title,
   },
   {
     accessorKey: "content",
     header: "내용",
     cell: ({ row }) => (
-      <span className="line-clamp-1 max-w-md text-muted-foreground">
+      <span className="line-clamp-1 text-muted-foreground">
         {row.original.content}
       </span>
     ),
+    ...NOTICE_COLUMN_WIDTH.content,
   },
   {
     accessorKey: "createdAt",
@@ -56,6 +57,7 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
         {formatDateTime(row.original.createdAt)}
       </span>
     ),
+    ...NOTICE_COLUMN_WIDTH.createdAt,
   },
   {
     id: "actions",
@@ -98,5 +100,6 @@ export const noticesColumns: ColumnDef<NoticeListItem>[] = [
     },
     enableSorting: false,
     enableHiding: false,
+    ...NOTICE_COLUMN_WIDTH.actions,
   },
 ];
