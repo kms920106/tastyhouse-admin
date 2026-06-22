@@ -19,6 +19,11 @@ export async function setValueToCookie(
   });
 }
 
+export async function removeCookie(key: string): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete(key);
+}
+
 export async function getPreference<T extends string>(key: string, allowed: readonly T[], fallback: T): Promise<T> {
   const cookieStore = await cookies();
   const cookie = cookieStore.get(key);

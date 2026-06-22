@@ -1,56 +1,60 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-
-const formSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
-  remember: z.boolean().optional(),
-});
+import { loginAction } from "@/feature/auth/actions";
+import { type LoginFormValues, loginFormSchema } from "@/feature/auth/schema";
 
 export function LoginForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
-      remember: false,
+      rememberMe: false,
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    toast("You submitted the following values", {
-      description: (
-        <pre className="mt-2 w-[320px] rounded-md bg-neutral-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  const onSubmit = async (values: LoginFormValues) => {
+    const result = await loginAction(values);
+
+    if (!result.success) {
+      toast.error(result.message);
+      return;
+    }
+
+    const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard/default";
+    router.push(callbackUrl);
   };
+
+  const isSubmitting = form.formState.isSubmitting;
 
   return (
     <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <FieldGroup className="gap-4">
         <Controller
           control={form.control}
-          name="email"
+          name="username"
           render={({ field, fieldState }) => (
             <Field className="gap-1.5" data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="login-email">Email Address</FieldLabel>
+              <FieldLabel htmlFor="login-username">아이디</FieldLabel>
               <Input
                 {...field}
-                id="login-email"
-                type="email"
-                placeholder="you@example.com"
-                autoComplete="email"
+                id="login-username"
+                type="text"
+                placeholder="아이디를 입력하세요"
+                autoComplete="username"
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -62,7 +66,7 @@ export function LoginForm() {
           name="password"
           render={({ field, fieldState }) => (
             <Field className="gap-1.5" data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="login-password">Password</FieldLabel>
+              <FieldLabel htmlFor="login-password">비밀번호</FieldLabel>
               <Input
                 {...field}
                 id="login-password"
@@ -77,19 +81,19 @@ export function LoginForm() {
         />
         <Controller
           control={form.control}
-          name="remember"
+          name="rememberMe"
           render={({ field, fieldState }) => (
             <Field orientation="horizontal" data-invalid={fieldState.invalid}>
               <Checkbox
-                id="login-remember"
+                id="login-remember-me"
                 name={field.name}
                 checked={field.value}
                 onCheckedChange={(checked) => field.onChange(Boolean(checked))}
                 aria-invalid={fieldState.invalid}
               />
               <FieldContent>
-                <FieldLabel htmlFor="login-remember" className="font-normal">
-                  Remember me for 30 days
+                <FieldLabel htmlFor="login-remember-me" className="font-normal">
+                  30일 동안 로그인 유지
                 </FieldLabel>
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </FieldContent>
@@ -97,8 +101,8 @@ export function LoginForm() {
           )}
         />
       </FieldGroup>
-      <Button className="w-full" type="submit">
-        Login
+      <Button className="w-full" type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "로그인 중..." : "로그인"}
       </Button>
     </form>
   );
