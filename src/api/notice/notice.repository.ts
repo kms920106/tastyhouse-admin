@@ -1,8 +1,8 @@
 import "server-only";
 
-import { api } from "@/lib/api/client";
+import { api } from "@/api/shared/client";
 
-import { ApiResponse } from "@/lib/api/types";
+import { ApiResponse } from "@/api/shared/types";
 import type { NoticeDetail, NoticeListItem, NoticeRequest } from "./notice.dto";
 
 /**

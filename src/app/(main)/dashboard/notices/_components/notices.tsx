@@ -21,8 +21,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { NoticeListItem } from "@/data/notice/notice.dto";
-import type { ApiPagination } from "@/lib/api/types";
+import type { NoticeListItem } from "@/api/notice/notice.dto";
+import type { ApiPagination } from "@/api/shared/types";
 
 import { DeleteNoticeDialog } from "./delete-notice-dialog";
 import { NoticeDetailSheet } from "./notice-detail-sheet";

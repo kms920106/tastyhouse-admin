@@ -15,7 +15,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { NoticeDetail } from "@/data/notice/notice.dto";
+import type { NoticeDetail } from "@/api/notice/notice.dto";
 import { fetchNoticeAction } from "@/feature/notice/actions";
 import { NOTICE_MESSAGE } from "@/feature/notice/message";
 

@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
-import type { NoticeDetail } from "@/data/notice/notice.dto";
-import { noticeRepository } from "@/data/notice/notice.repository";
+import type { NoticeDetail } from "@/api/notice/notice.dto";
+import { noticeRepository } from "@/api/notice/notice.repository";
 
 import { NOTICE_MESSAGE } from "./message";
 import { noticeFormSchema, type NoticeFormValues } from "./schema";

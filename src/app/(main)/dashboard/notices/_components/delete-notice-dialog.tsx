@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { NoticeListItem } from "@/data/notice/notice.dto";
+import type { NoticeListItem } from "@/api/notice/notice.dto";
 import { deleteNoticeAction } from "@/feature/notice/actions";
 import { NOTICE_MESSAGE } from "@/feature/notice/message";
 

@@ -25,7 +25,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
-import type { NoticeListItem } from "@/data/notice/notice.dto";
+import type { NoticeListItem } from "@/api/notice/notice.dto";
 import {
   createNoticeAction,
   updateNoticeAction,

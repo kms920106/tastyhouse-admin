@@ -32,7 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { NoticeListItem } from "@/data/notice/notice.dto";
+import type { NoticeListItem } from "@/api/notice/notice.dto";
 
 import type { NoticesTableMeta } from "./notices-columns";
 

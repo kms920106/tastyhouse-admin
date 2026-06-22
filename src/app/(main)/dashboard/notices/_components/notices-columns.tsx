@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { NoticeListItem } from "@/data/notice/notice.dto";
+import type { NoticeListItem } from "@/api/notice/notice.dto";
 
 import { formatDateTime } from "@/lib/date";
 

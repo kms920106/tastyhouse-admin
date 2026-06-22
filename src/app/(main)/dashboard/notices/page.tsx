@@ -1,4 +1,4 @@
-import { noticeRepository } from "@/data/notice/notice.repository";
+import { noticeRepository } from "@/api/notice/notice.repository";
 import { NOTICE_MESSAGE } from "@/feature/notice/message";
 import logger from "@/lib/logger";
 import { parseNonNegativeInt } from "@/lib/utils";
