@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-import { AUTH_COOKIE_KEYS } from "@/lib/auth-config";
+import { AUTH_COOKIE_KEYS, LOGIN_PATH } from "@/lib/auth-config";
 import logger from "@/lib/logger";
 import { getEpochMs } from "@/lib/utils";
 
@@ -61,6 +62,22 @@ class ApiClient {
   }
 
   private async request<T, P extends object>(
+    endpoint: string,
+    config: RequestConfig<P> = {},
+  ): Promise<ApiResponse<T>> {
+    const result = await this.executeRequest<T, P>(endpoint, config);
+
+    // 인증 클라이언트의 401(인증 실패/만료)은 로그인 페이지로 리다이렉트한다.
+    // redirect()는 NEXT_REDIRECT 예외를 throw하므로, executeRequest 내부의
+    // try/catch 가 이를 삼키지 않도록 반드시 try/catch 바깥에서 호출한다.
+    if (this.withAuth && result.status === 401) {
+      redirect(LOGIN_PATH);
+    }
+
+    return result;
+  }
+
+  private async executeRequest<T, P extends object>(
     endpoint: string,
     config: RequestConfig<P> = {},
   ): Promise<ApiResponse<T>> {
