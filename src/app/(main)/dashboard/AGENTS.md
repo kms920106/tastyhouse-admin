@@ -1,5 +1,5 @@
 <!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-06-16 | Updated: 2026-06-16 -->
+<!-- Generated: 2026-06-16 | Updated: 2026-06-22 -->
 
 # dashboard
 
@@ -34,7 +34,8 @@ The authenticated dashboard area. `layout.tsx` provides the shared chrome (sideb
 | `logistics/` | Logistics dashboard |
 | `invoice/` | Invoice page |
 | `kanban/` | Kanban board (drag-and-drop via `@dnd-kit`) |
-| `users/` | Users management (table over `src/data/users.ts`) |
+| `notices/` | Notices management (CRUD over `src/api/notice/` via `src/feature/notice/` Server Actions; table, detail/form sheets, delete dialog, with `loading.tsx`/`error.tsx`) |
+| `users/` | Users management (table over `src/api/users.ts`) |
 | `roles/` | Roles management (RBAC; roles table) |
 | `chat/` | Chat screen within the dashboard shell |
 | `mail/` | Mail screen within the dashboard shell |
@@ -58,6 +59,6 @@ The authenticated dashboard area. `layout.tsx` provides the shared chrome (sideb
 - `@tanstack/react-table`, `recharts`, `@dnd-kit/*` (kanban), `d3-geo`/`topojson-client` (maps), `lucide-react`
 
 ### Internal
-- `src/navigation/sidebar/sidebar-items.ts`, `src/components/ui/*`, `src/stores/preferences/`, `src/data/`
+- `src/navigation/sidebar/sidebar-items.ts`, `src/components/ui/*`, `src/stores/preferences/`, `src/api/`
 
 <!-- MANUAL: Any manually added notes below this line are preserved on regeneration -->

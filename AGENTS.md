@@ -1,4 +1,4 @@
-<!-- Generated: 2026-06-16 | Updated: 2026-06-16 -->
+<!-- Generated: 2026-06-16 | Updated: 2026-06-22 -->
 
 # tastyhouse-admin
 
@@ -28,7 +28,7 @@ A modern admin dashboard starter built with Next.js 16 (App Router), TypeScript,
 ## For AI Agents
 
 ### Working In This Directory
-- This is a **template/starter**: data is mock (see `src/data/`), there is no real backend or database. Auth screens are UI-only.
+- This is a **template/starter**: data is mock (see `src/api/`), there is no real backend or database. Auth screens are UI-only.
 - Package manager is **npm** (`package-lock.json` present). After editing `package.json`, run `npm install`.
 - The repo was synced from an upstream template (`template` field in `package.json`). Preserve the colocation architecture when adding features.
 

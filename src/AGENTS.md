@@ -1,10 +1,10 @@
 <!-- Parent: ../AGENTS.md -->
-<!-- Generated: 2026-06-16 | Updated: 2026-06-16 -->
+<!-- Generated: 2026-06-16 | Updated: 2026-06-22 -->
 
 # src
 
 ## Purpose
-Application source root. Uses a **colocation-based architecture**: routes live under `app/` (each feature owns its pages, layouts, and a local `_components/` folder), while cross-cutting concerns (shared UI, hooks, config, state, styles, mock data) live in dedicated top-level folders here.
+Application source root. Uses a **colocation-based architecture**: routes live under `app/` (each feature owns its pages, layouts, and a local `_components/` folder), while cross-cutting concerns (shared UI, hooks, config, state, styles, data-access) live in dedicated top-level folders here.
 
 ## Key Files
 | File | Description |
@@ -19,7 +19,8 @@ Application source root. Uses a **colocation-based architecture**: routes live u
 | `config/` | App-level configuration constants (see `config/AGENTS.md`) |
 | `lib/` | Utilities, fonts registry, and the preferences (theme/layout) engine (see `lib/AGENTS.md`) |
 | `hooks/` | Reusable React hooks (see `hooks/AGENTS.md`) |
-| `data/` | Static/mock data sources (see `data/AGENTS.md`) |
+| `api/` | Data-access layer: resource repositories, DTOs, and shared HTTP client/types (see `api/AGENTS.md`) |
+| `feature/` | Feature modules: Server Actions, validation schemas, and user-facing messages grouped per domain (see `feature/AGENTS.md`) |
 | `stores/` | Zustand client state stores and providers (see `stores/AGENTS.md`) |
 | `navigation/` | Sidebar navigation definition (see `navigation/AGENTS.md`) |
 | `server/` | Next.js Server Actions (see `server/AGENTS.md`) |
