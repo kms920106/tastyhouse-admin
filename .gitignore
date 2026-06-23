@@ -38,3 +38,10 @@ next-env.d.ts
 
 # oh-my-claudecode
 .omc/
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
