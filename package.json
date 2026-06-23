@@ -16,6 +16,8 @@
     "format": "biome format --write",
     "check": "biome check",
     "check:fix": "biome check --write",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "prepare": "husky",
     "generate:presets": "ts-node -P tsconfig.scripts.json src/scripts/generate-theme-presets.ts"
   },
@@ -62,6 +64,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.0",
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4.3.1",
     "@types/d3-geo": "^3.1.0",
     "@types/node": "^22.19.21",
@@ -69,6 +72,7 @@
     "@types/react-dom": "^19.2.3",
     "@types/topojson-client": "^3.1.5",
     "babel-plugin-react-compiler": "^1.0.0",
+    "dotenv": "^17.4.2",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "postcss": "^8.5.15",
