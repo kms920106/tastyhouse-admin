@@ -1,7 +1,9 @@
 "use server";
 
+import { redirect } from "next/navigation";
+
 import { authRepository } from "@/api/auth/auth.repository";
-import { AUTH_COOKIE_KEYS } from "@/lib/auth-config";
+import { AUTH_COOKIE_KEYS, LOGIN_PATH } from "@/lib/auth-config";
 import { getValueFromCookie, removeCookie, setValueToCookie } from "@/server/server-actions";
 
 import { AUTH_MESSAGE } from "./message";
@@ -73,11 +75,17 @@ export async function refreshAction(): Promise<AuthActionResult> {
 }
 
 // 로그아웃
-export async function logoutAction(): Promise<AuthActionResult> {
-  // 백엔드 로그아웃 호출 (실패해도 쿠키는 삭제)
-  await authRepository.logout().catch(() => null);
+export async function logoutAction(): Promise<void> {
+  const accessToken = await getValueFromCookie(AUTH_COOKIE_KEYS.ACCESS_TOKEN);
+
+  // 백엔드 로그아웃(블랙리스트 등록·Refresh Token 삭제)을 시도하되, 결과와 무관하게
+  // 클라이언트 자격증명은 반드시 제거한다. 서버 오류·네트워크 장애·토큰 만료(401) 어느
+  // 경우든 "로그아웃했는데 여전히 인증된" 상태를 남기지 않는 것이 보안상 안전하다.
+  if (accessToken) {
+    await authRepository.logout(accessToken).catch(() => null);
+  }
 
   await Promise.all([removeCookie(AUTH_COOKIE_KEYS.ACCESS_TOKEN), removeCookie(AUTH_COOKIE_KEYS.REFRESH_TOKEN)]);
 
-  return { success: true };
+  redirect(LOGIN_PATH);
 }

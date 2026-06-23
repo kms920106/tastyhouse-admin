@@ -16,8 +16,11 @@ export const authRepository = {
     return publicApi.post<AuthToken>(`${ENDPOINT}/v1/refresh`, body);
   },
 
-  // 로그아웃 (인증 필요 — api 사용, Authorization 헤더 자동 첨부)
-  logout(): Promise<ApiResponse<null>> {
-    return api.post<null>(`${ENDPOINT}/v1/logout`);
+  // 로그아웃 (인증 필요하나 publicApi 사용 — 토큰 만료(401) 시 자동 리다이렉트가
+  // 끼어들면 호출부가 쿠키 삭제를 보장하지 못하므로, Authorization 헤더를 직접 첨부한다)
+  logout(accessToken: string): Promise<ApiResponse<null>> {
+    return api.post<null>(`${ENDPOINT}/v1/logout`, undefined, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
   },
 };
