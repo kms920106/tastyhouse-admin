@@ -56,22 +56,28 @@ E2E_PASSWORD=<비밀번호>
 
 ---
 
-## 4. 실행 방법
+## 4. 실행 방법 (이 파일만)
+
+> 전체 E2E 실행 방법은 [Playwright E2E 전체 테스트 실행 방법](../playwright-e2e-overview.md) 참고.
+> 아래는 **`e2e/notices.spec.ts` 한 파일만** 실행하는 방법이다. (dev 서버·로그인 setup 은 자동 선행)
 
 ```bash
-# 전체 실행 (dev 서버 자동 기동 → 로그인 setup → 테스트)
-npm run test:e2e
-
-# UI 모드 (플로우 시각 확인 권장)
-npm run test:e2e:ui
-
-# 특정 파일만
+# 이 파일만 실행
 npx playwright test e2e/notices.spec.ts
 
-# 브라우저 화면을 보며 실행
-npx playwright test --headed
+# 이 파일을 UI 모드로 실행 (플로우 시각 확인 권장)
+npx playwright test e2e/notices.spec.ts --ui
 
-# 실패 후 HTML 리포트 열기
+# 브라우저 화면을 보며 실행 (headed)
+npx playwright test e2e/notices.spec.ts --headed
+
+# 이 파일 안의 특정 테스트만 (제목 부분일치)
+npx playwright test e2e/notices.spec.ts -g "등록에 성공"
+
+# 직렬 실행(워커 1개) — 실 데이터 격리/디버깅 시
+npx playwright test e2e/notices.spec.ts --workers=1
+
+# 실행 후 HTML 리포트 열기
 npx playwright show-report
 ```
 
