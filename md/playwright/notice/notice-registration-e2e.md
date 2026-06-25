@@ -101,11 +101,31 @@ npx playwright show-report
 > 셀렉터는 폼의 `htmlFor`↔`id` 매칭 덕에 `getByLabel("제목")` / `getByLabel("내용")` 으로 접근한다.
 > 제출 버튼 "등록"은 헤더 "공지 등록"과 부분일치하므로 반드시 `exact: true` 를 쓴다.
 
+### 5-3. 수정 성공 + 목록 갱신 (실 백엔드)
+등록과 동일한 `NoticeFormSheet` 가 **편집 모드**로 재사용된다(시트 제목 `"공지사항 수정"`, 기존 값 prefill, 제출 버튼 `"수정"`).
+수정 진입은 목록 각 **행의 작업 메뉴**(`aria-label="공지 작업 메뉴"`) → 드롭다운 `menuitem` `"수정"` 이다.
+
+1. 수정 대상을 먼저 등록한다(고유 제목으로 격리 — 어떤 행이 내 것인지 보장)
+2. 대상 행(`getByRole("row", { name: /제목/ })`)의 "공지 작업 메뉴" 버튼 클릭
+3. 드롭다운 `menuitem` `"수정"` 클릭 → 시트 `"공지사항 수정"` 노출
+4. 제목이 기존 값으로 prefill 되었는지 확인(`getByLabel("제목")` `toHaveValue`)
+5. 제목 변경 후 `"수정"`(exact) 클릭
+6. 토스트 `"공지사항이 수정되었습니다."` 노출 확인
+7. 목록 테이블에 갱신된 제목 셀(`getByRole("cell", { name: updatedTitle })`) 노출 확인
+
+### 5-4. 수정 검증 에러 (클라이언트, 백엔드는 등록 단계만 사용)
+1. 대상 공지 등록 → 작업 메뉴 → `"수정"` 진입
+2. 제목을 비우고 `"수정"`(exact) 클릭
+3. `"제목을 입력해 주세요."` 노출 확인
+
+> 행 단위로 작업 메뉴를 타겟하려면 `page.getByRole("row", { name: new RegExp(title) }).getByRole("button", { name: "공지 작업 메뉴" })` 처럼 행 스코프 안에서 버튼을 찾는다.
+> 제출 버튼 "수정"도 정확 매칭(`exact: true`)을 쓴다(편집 모드일 때만 "수정", 생성 모드는 "등록").
+
 ---
 
 ## 6. 통과 기준
 
-- `[setup] authenticate` 1개 + `[chromium] 공지사항 등록` 2개 = **총 3개** green
+- `[setup] authenticate` 1개 + `[chromium] 공지사항 등록` 2개 + `[chromium] 공지사항 수정` 2개 = **총 5개** green
 - `playwright-report/` HTML 리포트 생성
 
 ---
