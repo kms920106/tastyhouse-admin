@@ -117,3 +117,86 @@ test.describe("공지사항 수정", () => {
     await expect(page.getByText("제목을 입력해 주세요.")).toBeVisible();
   });
 });
+
+// 공지사항 삭제는 목록 각 행의 "공지 작업 메뉴" 드롭다운 → "삭제" 로 진입한다.
+// destructive menuitem 선택 시 확인용 AlertDialog("공지사항을 삭제하시겠습니까?")가 열리며,
+// 다이얼로그의 "삭제" 버튼으로 서버 액션(deleteNoticeAction)을 통해 실제로 삭제된다.
+test.describe("공지사항 삭제", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/dashboard/notices");
+  });
+
+  test("삭제에 성공하면 토스트가 뜨고 목록에서 해당 행이 사라진다", async ({
+    page,
+  }) => {
+    // 삭제 대상은 직접 등록해 격리한다(어떤 행을 지워도 안전하도록 내 것만 삭제).
+    const title = `E2E 삭제대상 공지 ${Date.now()}`;
+
+    // 1) 삭제할 공지를 먼저 등록한다.
+    await page.getByRole("button", { name: "공지 등록" }).click();
+    await expect(page.getByText("공지사항 등록")).toBeVisible();
+    await page.getByLabel("제목").fill(title);
+    await page.getByLabel("내용").fill("삭제 테스트용 내용입니다.");
+    await page.getByRole("button", { name: "등록", exact: true }).click();
+    await expect(page.getByText("공지사항이 등록되었습니다.")).toBeVisible();
+
+    // 등록한 공지 행이 목록에 나타날 때까지 대기.
+    const targetRow = page.getByRole("row", { name: new RegExp(title) });
+    await expect(targetRow).toBeVisible();
+
+    // 2) 해당 행의 작업 메뉴 → "삭제" 진입.
+    await targetRow.getByRole("button", { name: "공지 작업 메뉴" }).click();
+    await page.getByRole("menuitem", { name: "삭제" }).click();
+
+    // 확인 다이얼로그(AlertDialog) 노출 확인.
+    const dialog = page.getByRole("alertdialog");
+    await expect(
+      dialog.getByText("공지사항을 삭제하시겠습니까?"),
+    ).toBeVisible();
+    // 설명에 대상 제목이 포함되는지 확인.
+    await expect(dialog.getByText(new RegExp(title))).toBeVisible();
+
+    // 3) 다이얼로그의 "삭제" 버튼으로 확정.
+    //    드롭다운의 "삭제"와 텍스트가 같으므로 반드시 다이얼로그 스코프에서 찾는다.
+    await dialog.getByRole("button", { name: "삭제", exact: true }).click();
+
+    // 성공 토스트(sonner) 확인.
+    await expect(page.getByText("공지사항이 삭제되었습니다.")).toBeVisible();
+
+    // revalidatePath 후 목록에서 해당 행이 사라진다.
+    await expect(targetRow).toHaveCount(0);
+  });
+
+  test("삭제 다이얼로그에서 취소하면 공지가 그대로 유지된다", async ({
+    page,
+  }) => {
+    // 취소 후에도 남아있어야 하므로 고유 제목으로 등록해 격리한다.
+    const title = `E2E 삭제취소 공지 ${Date.now()}`;
+
+    await page.getByRole("button", { name: "공지 등록" }).click();
+    await expect(page.getByText("공지사항 등록")).toBeVisible();
+    await page.getByLabel("제목").fill(title);
+    await page.getByLabel("내용").fill("삭제 취소 테스트용 내용입니다.");
+    await page.getByRole("button", { name: "등록", exact: true }).click();
+    await expect(page.getByText("공지사항이 등록되었습니다.")).toBeVisible();
+
+    const targetRow = page.getByRole("row", { name: new RegExp(title) });
+    await expect(targetRow).toBeVisible();
+
+    // 작업 메뉴 → "삭제" 진입 → 확인 다이얼로그 노출.
+    await targetRow.getByRole("button", { name: "공지 작업 메뉴" }).click();
+    await page.getByRole("menuitem", { name: "삭제" }).click();
+
+    const dialog = page.getByRole("alertdialog");
+    await expect(
+      dialog.getByText("공지사항을 삭제하시겠습니까?"),
+    ).toBeVisible();
+
+    // "취소"로 닫으면 삭제되지 않는다.
+    await dialog.getByRole("button", { name: "취소", exact: true }).click();
+    await expect(dialog).toBeHidden();
+
+    // 공지 행이 목록에 그대로 남아 있다.
+    await expect(targetRow).toBeVisible();
+  });
+});
